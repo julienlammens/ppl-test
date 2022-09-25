@@ -20,17 +20,18 @@ class HospitalService extends RequestsService {
       T: 0,
       X: 0,
     };
-    const patients = patientsResponse.data
-      .split(",")
-      .reduce((previous: PatientsRegister, current: string) => {
-        previous[current as keyof typeof initialPatients] += 1;
-        return previous;
-      }, initialPatients);
+    const patients = patientsResponse.data.split(",");
+    for (const patient of patients) {
+      const key = patient as keyof typeof initialPatients;
+      if (initialPatients[key] !== undefined) {
+        initialPatients[key] += 1;
+      }
+    }
 
     // Transform string to drug array
     const drugs = drugsResponse.data ? drugsResponse.data.split(",") : [];
 
-    return { patients, drugs };
+    return { patients: initialPatients, drugs };
   }
 
   /**
